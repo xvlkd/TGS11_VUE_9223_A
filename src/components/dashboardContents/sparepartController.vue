@@ -2,7 +2,7 @@
     <v-container>
         <v-card>
             <v-container grid-list-md mb-0>
-            <h2 class="text-md-center">Sparepart</h2>
+            <h2 class="text-md-center">Data Spareparts</h2>
             <v-layout row wrap style="margin:10px">
                 <v-flex xs6>
                     <v-btn
@@ -14,7 +14,7 @@
                     @click="dialog=true"
                     >
                     <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                    Tambah Sparepart
+                    Tambah Spareparts
                     </v-btn>
                 </v-flex>
                 <v-flex xs6 class="text-right">
@@ -29,7 +29,7 @@
 
             <v-data-table
                 :headers="headers"
-                :items="Sparepart"
+                :items="spareparts"
                 :search="keyword"
                 :loading="load"
                 >
@@ -67,7 +67,7 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
         <v-card>
             <v-card-title>
-                <span class="headline">Sparepart</span>
+                <span class="headline">Spareparts Profile</span>
                 </v-card-title>
             <v-card-text>
                 <v-container>
@@ -76,13 +76,14 @@
                             <v-text-field label="Name*" v-model="form.name" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Merk" v-model="form.merk" required></v-text-field>
+                            <v-text-field label="merk*" v-model="form.merk" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field label="Amount" v-model="form.amount" required></v-text-field>
+                            <v-text-field label="amount*" v-model="form.amount" required></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
+                <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -124,11 +125,11 @@ export default {
                     value:'name'
                 },
                 {
-                    text:'Merk',
+                    text:'merk',
                     value:'merk'
                 },
                 {
-                    text:'Amount',
+                    text:'amount',
                     value:'amount'
                 },
                 {
@@ -136,7 +137,7 @@ export default {
                     value:null
                 },
             ],
-            users:[],
+            spareparts:[],
             snackbar: false,
             color: null,
             text: '',
@@ -146,7 +147,7 @@ export default {
                 merk: '',
                 amount: ''
                 },
-                user:new FormData,
+                spareparts:new FormData,
                 typeInput: 'new',
                 errors: '',
                 updatedId: '',
@@ -156,23 +157,23 @@ export default {
                 getData() {
                     var uri = this.$apiUrl + '/spareparts'
                     this.$http.get(uri).then(response => {
-                        this.users=response.data.message
+                        this.spareparts=response.data.message
                         })
                     },
                 sendData() {
-                    this.user.append('name',this.form.name);
-                    this.user.append('merk',this.form.merk);
-                    this.user.append('amount',this.form.amount);
+                    this.spareparts.append('name',this.form.name);
+                    this.spareparts.append('merk',this.form.merk);
+                    this.spareparts.append('amount',this.form.amount);
                     var uri=this.$apiUrl + '/spareparts'
                     this.load=true 
-                    this.$http.post(uri,this.user).then(response=>{
+                    this.$http.post(uri,this.spareparts).then(response=>{
                         this.snackbar=true; //mengaktifkan snackbar
                         this.color='green'; //memberi warna snackbar
                         this.text=response.data.message; //memasukkan pesan kesnackbar
 
                         this.load=false;
                         this.dialog=false
-                        this.getData(); //mengambil data user 
+                        this.getData(); //mengambil data spareparts 
                         this.resetForm();
                     }).catch(error =>{
                         this.errors = error
@@ -183,19 +184,19 @@ export default {
                     })
                 },
                 updateData(){
-                    this.user.append('name', this.form.name);
-                    this.user.append('merk',this.form.merk);
-                    this.user.append('amount',this.form.amount);
+                    this.spareparts.append('name', this.form.name);
+                    this.spareparts.append('merk',this.form.merk);
+                    this.spareparts.append('amount',this.form.amount);
                     var uri=this.$apiUrl + '/spareparts/' + this.updatedId;
                     this.load=true
-                    this.$http.post(uri,this.user).then(response=>{
+                    this.$http.post(uri,this.spareparts).then(response=>{
                         this.snackbar=true; //mengaktifkan snackbar
                         this.color = 'green'; //memberi warna snackbar
                         this.text = response.data.message; //memasukkan pesan kesnackbar
 
                         this.load = false;
                         this.dialog = false
-                        this.getData(); //mengambil data user
+                        this.getData(); //mengambil data spareparts
                         this.resetForm();
                         this.typeInput='new';
                     }).catch(error =>{
@@ -212,7 +213,7 @@ export default {
                     this.dialog = true;
                     this.form.name = item.name;
                     this.form.merk = item.merk;
-                    this.form.amount = item.amount,
+                    this.form.amount = '',
                     this.updatedId = item.id
                 },
                 deleteData(deleteId){ //mengahapus data

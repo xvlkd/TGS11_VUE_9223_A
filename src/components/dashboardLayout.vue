@@ -75,7 +75,7 @@ export default {
         return {
             drawer: null,
             items: [
-                { title: 'User Controller', icon: 'mdi-human-male' },
+                { title: 'Sparepart' }
             ],
         }
     },
